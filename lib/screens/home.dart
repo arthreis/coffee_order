@@ -1,6 +1,4 @@
-import 'dart:ui';
-
-import 'package:coffee_order/screens/order.dart';
+import 'package:coffee_order/screens/products.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -38,8 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               color: Colors.blue,
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => OrderPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ProductsPage()));
               },
             )
           ],
