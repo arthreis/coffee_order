@@ -1,5 +1,6 @@
-import 'package:coffee_order/screens/products.dart';
+import 'package:coffee_order/screens/products/products.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -11,7 +12,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final myController = TextEditingController();
+  final nameFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,25 +24,34 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextFormField(
+            TextField(
+              controller: nameFieldController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Usuário',
-              ),
-            ),
+              ),            ),
             RaisedButton(
               child: Text(
                 'Avançar',
                 style: TextStyle(color: Colors.white),
               ),
               color: Colors.blue,
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ProductsPage()));
+              onPressed: () async {
+                SharedPreferences preferences = await SharedPreferences.getInstance();
+                await preferences.setString('user', nameFieldController.text);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProductsPage(user: nameFieldController.text)));
               },
             )
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the Widget is disposed
+    nameFieldController.dispose();
+    super.dispose();
   }
 }
