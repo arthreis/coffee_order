@@ -8,6 +8,6 @@ class Product {
   Product({
     @required this.name,
     @required this.price,
-    this.imagePath,
+    @required this.imagePath,
   });
 }

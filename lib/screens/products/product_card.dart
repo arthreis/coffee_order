@@ -23,7 +23,8 @@ class ProductCardState extends State<ProductCard> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: Image.asset(widget.product.imagePath?? 'assets/images/coffee_icons/empty.png'),
+            leading: Image.asset(widget.product.imagePath ??
+                'assets/images/coffee_icons/empty.png'),
             title: Text(widget.product.name),
             subtitle: Text(StringUtils.formatPrice(widget.product.price)),
           ),
@@ -33,6 +34,7 @@ class ProductCardState extends State<ProductCard> {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Text(StringUtils.formatPrice(widget._subtotal)),
               ButtonTheme.bar(

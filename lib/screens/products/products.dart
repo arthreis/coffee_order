@@ -66,13 +66,13 @@ class ProductsPageState extends State<ProductsPage> {
     ];
 
     for (Product product in products) {
-      productCards.add(ProductCard(product: product, callback: updateTotal));
+      productCards.add(ProductCard(product: product, callback: _updateTotal));
     }
 
     return productCards;
   }
 
-  void updateTotal(deltaPrice) {
+  void _updateTotal(deltaPrice) {
     setState(() {
       _total += deltaPrice;
     });
