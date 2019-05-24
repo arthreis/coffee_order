@@ -1,11 +1,12 @@
 import 'package:coffee_order/models/product.dart';
 import 'package:coffee_order/screens/products/product_card.dart';
+import 'package:coffee_order/util/string_utils.dart';
 import 'package:flutter/material.dart';
 
 class ProductsPage extends StatefulWidget {
   final String user;
 
-  const ProductsPage({Key key, this.user}): super(key: key);
+  const ProductsPage({Key key, this.user}) : super(key: key);
 
   @override
   ProductsPageState createState() {
@@ -15,8 +16,8 @@ class ProductsPage extends StatefulWidget {
 
 class ProductsPageState extends State<ProductsPage> {
   List<ProductCard> productCards = [];
-  
-  int _total = 0;
+
+  double _total = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class ProductsPageState extends State<ProductsPage> {
               icon: Icon(Icons.menu),
               onPressed: () {},
             ),
-            Text('R\$ $_total'),
+            Text(StringUtils.formatPrice(_total)),
             FlatButton.icon(
               label: Text('Share'),
               icon: Icon(Icons.share),
@@ -49,24 +50,38 @@ class ProductsPageState extends State<ProductsPage> {
 
   List<Widget> _gerarProdutos() {
     List<Product> products = [
-      Product(name: 'Espresso Vanilla', price: 2.25),
-      Product(name: 'Espresso Caramel', price: 2.25),
-      Product(name: 'Espresso 1', price: 1.85),
-      Product(name: 'Espresso 2', price: 2.05),
-      Product(name: 'Espresso 3', price: 2.25),
-      Product(name: 'Espresso 4', price: 2.25),
-      Product(name: 'Espresso 5', price: 1.85),
-      Product(name: 'Espresso 6', price: 1.85),
-      Product(name: 'Espresso 7', price: 2.25),
-      Product(name: 'Espresso 8', price: 1.85),
-      Product(name: 'Espresso 9', price: 1.85),
-      Product(name: 'Espresso 0', price: 2.05),
+      _createProduct('Ristretto Intenso', 2.05),
+      _createProduct('Ristretto Origin India', 2.25),
+      _createProduct('Ristretto', 1.85),
+      _createProduct('Espresso Forte', 1.85),
+      _createProduct('Espresso Leggero', 1.85),
+      _createProduct('Espresso Origin Brazil', 2.25),
+      _createProduct('Lungo Origin Guatemala', 2.25),
+      _createProduct('Lungo Forte', 1.85),
+      _createProduct('Lungo Leggero', 1.85),
+      _createProduct('Espresso Decaffeinato', 1.85),
+      _createProduct('Lungo Decaffeinato', 1.85),
+      _createProduct('Espresso Vanilla', 2.25),
+      _createProduct('Espresso Caramel', 2.25),
     ];
 
     for (Product product in products) {
-      productCards.add(ProductCard(product: product));
+      productCards.add(ProductCard(product: product, callback: updateTotal));
     }
 
     return productCards;
+  }
+
+  void updateTotal(deltaPrice) {
+    setState(() {
+      _total += deltaPrice;
+    });
+  }
+
+  _createProduct(String name, double price) {
+    String path = 'assets/images/coffee_icons/';
+    String imageName = name.split(' ').map((name) => name.toLowerCase()).join('-') + '.webp';
+    
+    return Product(name: name, price: price, imagePath: path + imageName);
   }
 }

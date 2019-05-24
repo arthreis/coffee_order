@@ -1,19 +1,21 @@
 import 'package:coffee_order/models/product.dart';
 import 'package:flutter/material.dart';
+import '../../util/string_utils.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;
+  final Function callback;
+  int _quantity = 0;
+  double _subtotal = 0;
 
-  ProductCard({@required this.product, Key key}) : super(key: key);
+  ProductCard({@required this.product, @required this.callback, Key key})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ProductCardState();
 }
 
 class ProductCardState extends State<ProductCard> {
-  int _quantity = 0;
-  double _subtotal = 0;
-
   @override
   Widget build(context) {
     return Card(
@@ -21,18 +23,18 @@ class ProductCardState extends State<ProductCard> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: Icon(Icons.album),
+            leading: Image.asset(widget.product.imagePath?? 'assets/images/coffee_icons/empty.png'),
             title: Text(widget.product.name),
-            subtitle: Text(widget.product.price.toString()),
+            subtitle: Text(StringUtils.formatPrice(widget.product.price)),
           ),
           Text(
-            '$_quantity',
+            '${widget._quantity}',
             style: Theme.of(context).textTheme.display1,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text('R\$ $_subtotal'),
+              Text(StringUtils.formatPrice(widget._subtotal)),
               ButtonTheme.bar(
                 // make buttons use the appropriate styles for cards
                 child: ButtonBar(
@@ -59,17 +61,21 @@ class ProductCardState extends State<ProductCard> {
 
   void _addProduct() {
     setState(() {
-      _quantity++;
-      _subtotal = _quantity * widget.product.price;
+      widget._quantity++;
+      widget._subtotal = widget._quantity * widget.product.price;
     });
+
+    widget.callback(widget.product.price);
   }
 
   void _removeProduct() {
-    setState(() {
-      if (_quantity > 0) {
-        _quantity--;
-        _subtotal = _quantity * widget.product.price;
-      }
-    });
+    if (widget._quantity > 0) {
+      setState(() {
+        widget._quantity--;
+        widget._subtotal = widget._quantity * widget.product.price;
+      });
+
+      widget.callback(-widget.product.price);
+    }
   }
 }
