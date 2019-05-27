@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
-
 class User {
-  final String name;
+  String name;
 
   User({
-    @required this.name,
+    this.name,
   });
 }

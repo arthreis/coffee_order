@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 SharedPreferences preferences = await SharedPreferences.getInstance();
                 await preferences.setString('user', nameFieldController.text);
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProductsPage(user: nameFieldController.text)));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProductsPage(userName: nameFieldController.text)));
               },
             )
           ],

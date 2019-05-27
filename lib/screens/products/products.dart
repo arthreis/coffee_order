@@ -2,11 +2,13 @@ import 'package:coffee_order/models/product.dart';
 import 'package:coffee_order/screens/products/product_card.dart';
 import 'package:coffee_order/util/string_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductsPage extends StatefulWidget {
-  final String user;
+  final String userName;
 
-  const ProductsPage({Key key, this.user}) : super(key: key);
+  const ProductsPage({Key key, this.userName}) : super(key: key);
 
   @override
   ProductsPageState createState() {
@@ -16,31 +18,26 @@ class ProductsPage extends StatefulWidget {
 
 class ProductsPageState extends State<ProductsPage> {
   List<ProductCard> productCards = [];
-
   double _total = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Olá, ${widget.user}"),
+        title: Text("Olá, ${widget.userName}"),
       ),
       body: ListView(children: _gerarProdutos()),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         child: new Row(
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {},
-            ),
             Text(StringUtils.formatPrice(_total)),
             FlatButton.icon(
               label: Text('Share'),
               icon: Icon(Icons.share),
-              onPressed: () {},
+              onPressed: _shareOrder,
             ),
           ],
         ),
@@ -49,6 +46,10 @@ class ProductsPageState extends State<ProductsPage> {
   }
 
   List<Widget> _gerarProdutos() {
+    if (productCards.length > 0) {
+      return productCards;
+    }
+
     List<Product> products = [
       _createProduct('Ristretto Intenso', 2.05),
       _createProduct('Ristretto Origin India', 2.25),
@@ -78,10 +79,18 @@ class ProductsPageState extends State<ProductsPage> {
     });
   }
 
-  _createProduct(String name, double price) {
+  Product _createProduct(String name, double price) {
     String path = 'assets/images/coffee_icons/';
-    String imageName = name.split(' ').map((name) => name.toLowerCase()).join('-') + '.webp';
-    
+    String imageName =
+        name.split(' ').map((name) => name.toLowerCase()).join('-') + '.webp';
+
     return Product(name: name, price: price, imagePath: path + imageName);
+  }
+
+  void _shareOrder() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var orderString = preferences.getString('user') + ',' + productCards.map((productCard) => productCard.order.quantity.toString()).join(',');
+
+    Share.share(orderString);
   }
 }

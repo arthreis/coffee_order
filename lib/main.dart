@@ -1,3 +1,4 @@
+import 'package:coffee_order/models/user.dart';
 import 'package:coffee_order/screens/home.dart';
 import 'package:coffee_order/screens/products/products.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  String user;
+  final user = User();
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         future: _isLoggedIn(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return snapshot.data ? MyHomePage(title: 'Bem vindo') : ProductsPage(user: user);
+            return snapshot.data ? MyHomePage(title: 'Bem vindo') : ProductsPage(userName: user.name);
           }
 
           return Center(child: CircularProgressIndicator());
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
 
   Future<bool> _isLoggedIn() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    user = preferences.getString('user');
+    user.name = preferences.getString('user');
     return user == null;
   }
 }
