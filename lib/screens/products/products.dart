@@ -19,15 +19,16 @@ class ProductsPage extends StatefulWidget {
 class ProductsPageState extends State<ProductsPage> {
   List<ProductCard> productCards = [];
   double _total = 0;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Olá, ${widget.userName}"),
       ),
       body: ListView(children: _gerarProdutos()),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         child: new Row(
           mainAxisSize: MainAxisSize.max,
@@ -88,9 +89,18 @@ class ProductsPageState extends State<ProductsPage> {
   }
 
   void _shareOrder() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    var orderString = preferences.getString('user') + ',' + productCards.map((productCard) => productCard.order.quantity.toString()).join(',');
+    if (productCards.any((item) => item.order.quantity > 0)) {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      var orderString = preferences.getString('user') +
+          ',' +
+          productCards
+              .map((productCard) => productCard.order.quantity.toString())
+              .join(',');
 
-    Share.share(orderString);
+      Share.share(orderString);
+    } else {
+      SnackBar mensagemErro = SnackBar(content: Text('Pedido vazio!'), backgroundColor: Colors.redAccent,);
+      _scaffoldKey.currentState.showSnackBar(mensagemErro);
+    }
   }
 }

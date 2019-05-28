@@ -1,7 +1,7 @@
 import 'package:coffee_order/models/order.dart';
 import 'package:coffee_order/models/product.dart';
-import 'package:flutter/material.dart';
 import 'package:coffee_order/util/string_utils.dart';
+import 'package:flutter/material.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;
@@ -45,11 +45,13 @@ class ProductCardState extends State<ProductCard> {
                       onPressed: _addProduct,
                       icon: Icon(Icons.expand_less),
                       label: Text('ADD'),
+                      textTheme: ButtonTextTheme.accent,
                     ),
                     FlatButton.icon(
                       onPressed: _removeProduct,
                       icon: Icon(Icons.expand_more),
                       label: Text('REMOVE'),
+                      textTheme: ButtonTextTheme.accent
                     ),
                   ],
                 ),

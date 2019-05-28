@@ -1,4 +1,3 @@
-import 'package:coffee_order/models/user.dart';
 import 'package:coffee_order/screens/home.dart';
 import 'package:coffee_order/screens/products/products.dart';
 import 'package:flutter/material.dart';
@@ -6,33 +5,45 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
-  final user = User();
+class MyApp extends StatefulWidget {
+  @override
+  createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+  Future<String> userName;
+
+  @override
+  void initState() {
+    super.initState();
+    userName = _getUserName();
+  }
 
   @override
   Widget build(BuildContext context) {
-        return MaterialApp(
+    return MaterialApp(
       title: 'Coffee Order',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        brightness: Brightness.dark
-      ),
+      theme: ThemeData(primarySwatch: Colors.amber, brightness: Brightness.dark, accentColor: Colors.amberAccent),
       home: FutureBuilder(
-        future: _isLoggedIn(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return snapshot.data ? MyHomePage(title: 'Bem vindo') : ProductsPage(userName: user.name);
-          }
-
-          return Center(child: CircularProgressIndicator());
-        }
-      ),
+          future: userName,
+          builder: (context, AsyncSnapshot<String> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                return snapshot.data != null
+                    ? ProductsPage(userName: snapshot.data)
+                    : MyHomePage(title: 'Bem vindo');
+              default:
+                return Center(child: CircularProgressIndicator());
+            }
+          }),
     );
   }
 
-  Future<bool> _isLoggedIn() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    user.name = preferences.getString('user');
-    return user == null;
+  Future<String> _getUserName() {
+    return SharedPreferences.getInstance().then((preferences) {
+      return preferences.getString('user');
+    }).catchError((error) {
+      return error;
+    });
   }
 }
