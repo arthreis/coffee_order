@@ -31,7 +31,7 @@ class MyAppState extends State<MyApp> {
               case ConnectionState.done:
                 return snapshot.data != null
                     ? ProductsPage(userName: snapshot.data)
-                    : MyHomePage(title: 'Bem vindo');
+                    : MyHomePage();
               default:
                 return Center(child: CircularProgressIndicator());
             }

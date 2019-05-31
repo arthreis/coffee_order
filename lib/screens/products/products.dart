@@ -1,4 +1,5 @@
 import 'package:coffee_order/models/product.dart';
+import 'package:coffee_order/screens/home.dart';
 import 'package:coffee_order/screens/products/product_card.dart';
 import 'package:coffee_order/util/string_utils.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,10 @@ class ProductsPageState extends State<ProductsPage> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Olá, ${widget.userName}"),
+        actions: <Widget>[
+          FlatButton(child: Icon(Icons.exit_to_app),
+          onPressed: _logout,)
+        ],
       ),
       body: ListView(children: _gerarProdutos()),
       bottomNavigationBar: BottomAppBar(
@@ -102,5 +107,11 @@ class ProductsPageState extends State<ProductsPage> {
       SnackBar mensagemErro = SnackBar(content: Text('Pedido vazio!'), backgroundColor: Colors.redAccent,);
       _scaffoldKey.currentState.showSnackBar(mensagemErro);
     }
+  }
+
+  void _logout() async {
+    var preferences = await SharedPreferences.getInstance();
+    await preferences.remove('user');
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
   }
 }
