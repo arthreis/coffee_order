@@ -1,6 +1,7 @@
+import 'package:coffee_order/api/api.dart';
 import 'package:coffee_order/models/product.dart';
 import 'package:coffee_order/screens/home.dart';
-import 'package:coffee_order/screens/products/product_card.dart';
+import 'package:coffee_order/components/product_card.dart';
 import 'package:coffee_order/util/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
@@ -21,6 +22,13 @@ class ProductsPageState extends State<ProductsPage> {
   List<ProductCard> productCards = [];
   double _total = 0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  Future<List<Product>> products;
+
+  @override
+  void initState() {
+    super.initState();
+    products = getProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +41,16 @@ class ProductsPageState extends State<ProductsPage> {
           onPressed: _logout,)
         ],
       ),
-      body: ListView(children: _gerarProdutos()),
+      body: FutureBuilder(
+        future: products,
+        builder: (context, AsyncSnapshot<dynamic> snapshot){
+          if(snapshot.connectionState == ConnectionState.done){
+            return ListView(children: _gerarProdutos(snapshot.data));
+          }else{
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
       bottomNavigationBar: BottomAppBar(
         child: new Row(
           mainAxisSize: MainAxisSize.max,
@@ -51,31 +68,14 @@ class ProductsPageState extends State<ProductsPage> {
     );
   }
 
-  List<Widget> _gerarProdutos() {
+  List<Widget> _gerarProdutos(List<Product> products) {
     if (productCards.length > 0) {
       return productCards;
     }
 
-    List<Product> products = [
-      _createProduct('Ristretto Intenso', 2.05),
-      _createProduct('Ristretto Origin India', 2.25),
-      _createProduct('Ristretto', 1.85),
-      _createProduct('Espresso Forte', 1.85),
-      _createProduct('Espresso Leggero', 1.85),
-      _createProduct('Espresso Origin Brazil', 2.25),
-      _createProduct('Lungo Origin Guatemala', 2.25),
-      _createProduct('Lungo Forte', 1.85),
-      _createProduct('Lungo Leggero', 1.85),
-      _createProduct('Espresso Decaffeinato', 1.85),
-      _createProduct('Lungo Decaffeinato', 1.85),
-      _createProduct('Espresso Vanilla', 2.25),
-      _createProduct('Espresso Caramel', 2.25),
-    ];
-
     for (Product product in products) {
-      productCards.add(ProductCard(product: product, callback: _updateTotal));
+      productCards.add(ProductCard(product: _createProduct(product.name, product.price), callback: _updateTotal));
     }
-
     return productCards;
   }
 
@@ -87,8 +87,7 @@ class ProductsPageState extends State<ProductsPage> {
 
   Product _createProduct(String name, double price) {
     String path = 'assets/images/coffee_icons/';
-    String imageName =
-        name.split(' ').map((name) => name.toLowerCase()).join('-') + '.webp';
+    String imageName = name.split(' ').map((name) => name.toLowerCase()).join('-') + '.webp';
 
     return Product(name: name, price: price, imagePath: path + imageName);
   }
@@ -113,5 +112,9 @@ class ProductsPageState extends State<ProductsPage> {
     var preferences = await SharedPreferences.getInstance();
     await preferences.remove('user');
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+  }
+
+  Future<List<Product>> getProducts() {
+    return Api().getCoffees();
   }
 }
