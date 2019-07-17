@@ -23,7 +23,7 @@ class ProductCardState extends State<ProductCard> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: Image.asset(widget.product.imagePath ??
+            leading: Image.asset(_getFullImagePath(widget.product.name) ??
                 'assets/images/coffee_icons/empty.png'),
             title: Text(widget.product.name),
             subtitle: Text(StringUtils.formatPrice(widget.product.price)),
@@ -48,11 +48,10 @@ class ProductCardState extends State<ProductCard> {
                       textTheme: ButtonTextTheme.accent,
                     ),
                     FlatButton.icon(
-                      onPressed: _removeProduct,
-                      icon: Icon(Icons.expand_more),
-                      label: Text('REMOVE'),
-                      textTheme: ButtonTextTheme.accent
-                    ),
+                        onPressed: _removeProduct,
+                        icon: Icon(Icons.expand_more),
+                        label: Text('REMOVE'),
+                        textTheme: ButtonTextTheme.accent),
                   ],
                 ),
               ),
@@ -82,4 +81,12 @@ class ProductCardState extends State<ProductCard> {
       widget.callback(-widget.product.price);
     }
   }
+}
+
+_getFullImagePath(String productName) {
+  const String PATH_PREFIX = 'assets/images/coffee_icons/';
+  final String imageName =
+      productName.split(' ').map((name) => name.toLowerCase()).join('-') +
+          '.webp';
+  return PATH_PREFIX + imageName;
 }

@@ -7,7 +7,7 @@ class Api {
 
     static const String BASE_URL = "http://api-coffee-order.herokuapp.com/";
 
-    static const String GET_COFFEES = BASE_URL+"product/coffees";
+    static const String GET_COFFEES = BASE_URL + "product/coffees";
 
     Future<List<Product>> getCoffees() async {
 
@@ -20,5 +20,9 @@ class Api {
         }else{
             throw Exception("ERROR");
         }
+    }
+
+    Future<void> saveOrder(order) async {
+      
     }
 }

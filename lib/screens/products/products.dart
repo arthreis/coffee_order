@@ -74,8 +74,9 @@ class ProductsPageState extends State<ProductsPage> {
     }
 
     for (Product product in products) {
-      productCards.add(ProductCard(product: _createProduct(product.name, product.price), callback: _updateTotal));
+      productCards.add(ProductCard(product: product, callback: _updateTotal));
     }
+
     return productCards;
   }
 
@@ -83,13 +84,6 @@ class ProductsPageState extends State<ProductsPage> {
     setState(() {
       _total += deltaPrice;
     });
-  }
-
-  Product _createProduct(String name, double price) {
-    String path = 'assets/images/coffee_icons/';
-    String imageName = name.split(' ').map((name) => name.toLowerCase()).join('-') + '.webp';
-
-    return Product(name: name, price: price, imagePath: path + imageName);
   }
 
   void _shareOrder() async {
@@ -102,6 +96,7 @@ class ProductsPageState extends State<ProductsPage> {
               .join(',');
 
       Share.share(orderString);
+      // TODO: save order
     } else {
       SnackBar mensagemErro = SnackBar(content: Text('Pedido vazio!'), backgroundColor: Colors.redAccent,);
       _scaffoldKey.currentState.showSnackBar(mensagemErro);
