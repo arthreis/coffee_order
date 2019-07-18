@@ -1,4 +1,5 @@
 import 'package:coffee_order/api/api.dart';
+import 'package:coffee_order/models/order_item.dart';
 import 'package:coffee_order/models/product.dart';
 import 'package:coffee_order/screens/home.dart';
 import 'package:coffee_order/components/product_card.dart';
@@ -37,16 +38,18 @@ class ProductsPageState extends State<ProductsPage> {
       appBar: AppBar(
         title: Text("Olá, ${widget.userName}"),
         actions: <Widget>[
-          FlatButton(child: Icon(Icons.exit_to_app),
-          onPressed: _logout,)
+          FlatButton(
+            child: Icon(Icons.exit_to_app),
+            onPressed: _logout,
+          )
         ],
       ),
       body: FutureBuilder(
         future: products,
-        builder: (context, AsyncSnapshot<dynamic> snapshot){
-          if(snapshot.connectionState == ConnectionState.done){
+        builder: (context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
             return ListView(children: _gerarProdutos(snapshot.data));
-          }else{
+          } else {
             return Center(child: CircularProgressIndicator());
           }
         },
@@ -87,18 +90,24 @@ class ProductsPageState extends State<ProductsPage> {
   }
 
   void _shareOrder() async {
-    if (productCards.any((item) => item.order.quantity > 0)) {
+    if (productCards.any((item) => item.orderItem.quantity > 0)) {
       SharedPreferences preferences = await SharedPreferences.getInstance();
+      List<OrderItem> orderItems = productCards.map((pc) => OrderItem(
+          quantity: pc.orderItem.quantity, subtotal: pc.orderItem.subtotal));
+
       var orderString = preferences.getString('user') +
           ',' +
           productCards
-              .map((productCard) => productCard.order.quantity.toString())
+              .map((productCard) => productCard.orderItem.quantity.toString())
               .join(',');
 
       Share.share(orderString);
-      // TODO: save order
+      Api().saveOrder();
     } else {
-      SnackBar mensagemErro = SnackBar(content: Text('Pedido vazio!'), backgroundColor: Colors.redAccent,);
+      SnackBar mensagemErro = SnackBar(
+        content: Text('Pedido vazio!'),
+        backgroundColor: Colors.redAccent,
+      );
       _scaffoldKey.currentState.showSnackBar(mensagemErro);
     }
   }
@@ -106,7 +115,8 @@ class ProductsPageState extends State<ProductsPage> {
   void _logout() async {
     var preferences = await SharedPreferences.getInstance();
     await preferences.remove('user');
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => MyHomePage()));
   }
 
   Future<List<Product>> getProducts() {
