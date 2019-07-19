@@ -1,4 +1,5 @@
 import 'package:coffee_order/api/api.dart';
+import 'package:coffee_order/models/order.dart';
 import 'package:coffee_order/models/order_item.dart';
 import 'package:coffee_order/models/product.dart';
 import 'package:coffee_order/screens/home.dart';
@@ -95,6 +96,8 @@ class ProductsPageState extends State<ProductsPage> {
       List<OrderItem> orderItems = productCards.map((pc) => OrderItem(
           quantity: pc.orderItem.quantity, subtotal: pc.orderItem.subtotal));
 
+      Order order = Order.fromJson(preferences.get('user'));
+
       var orderString = preferences.getString('user') +
           ',' +
           productCards
@@ -102,7 +105,7 @@ class ProductsPageState extends State<ProductsPage> {
               .join(',');
 
       Share.share(orderString);
-      Api().saveOrder();
+      Api().saveOrder(order);
     } else {
       SnackBar mensagemErro = SnackBar(
         content: Text('Pedido vazio!'),
