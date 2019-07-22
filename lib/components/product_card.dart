@@ -4,12 +4,12 @@ import 'package:coffee_order/util/string_utils.dart';
 import 'package:flutter/material.dart';
 
 class ProductCard extends StatefulWidget {
-  final Product product;
   final Function callback;
-  final orderItem = OrderItem(quantity: 0, subtotal: 0);
+  final OrderItem orderItem;
 
-  ProductCard({@required this.product, @required this.callback, Key key})
-      : super(key: key);
+  ProductCard(Product product, {@required this.callback, Key key})
+      : orderItem = OrderItem(quantity: 0, subtotal: 0, product: product),
+        super(key: key);
 
   @override
   State<StatefulWidget> createState() => ProductCardState();
@@ -23,10 +23,10 @@ class ProductCardState extends State<ProductCard> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: Image.asset(_getFullImagePath(widget.product.name) ??
+            leading: Image.asset(_getFullImagePath(widget.orderItem.product.name) ??
                 'assets/images/coffee_icons/empty.png'),
-            title: Text(widget.product.name),
-            subtitle: Text(StringUtils.formatPrice(widget.product.price)),
+            title: Text(widget.orderItem.product.name),
+            subtitle: Text(StringUtils.formatPrice(widget.orderItem.product.price)),
           ),
           Text(
             '${widget.orderItem.quantity}',
@@ -65,20 +65,22 @@ class ProductCardState extends State<ProductCard> {
   void _addProduct() {
     setState(() {
       widget.orderItem.quantity++;
-      widget.orderItem.subtotal = widget.orderItem.quantity * widget.product.price;
+      widget.orderItem.subtotal =
+          widget.orderItem.quantity * widget.orderItem.product.price;
     });
 
-    widget.callback(widget.product.price);
+    widget.callback(widget.orderItem.product.price);
   }
 
   void _removeProduct() {
     if (widget.orderItem.quantity > 0) {
       setState(() {
         widget.orderItem.quantity--;
-        widget.orderItem.subtotal = widget.orderItem.quantity * widget.product.price;
+        widget.orderItem.subtotal =
+            widget.orderItem.quantity * widget.orderItem.product.price;
       });
 
-      widget.callback(-widget.product.price);
+      widget.callback(-widget.orderItem.product.price);
     }
   }
 }

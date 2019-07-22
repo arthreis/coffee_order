@@ -1,12 +1,14 @@
+import 'dart:convert';
+
 import 'package:coffee_order/api/api.dart';
+import 'package:coffee_order/components/product_card.dart';
 import 'package:coffee_order/models/order.dart';
 import 'package:coffee_order/models/order_item.dart';
 import 'package:coffee_order/models/product.dart';
+import 'package:coffee_order/models/user.dart';
 import 'package:coffee_order/screens/home.dart';
-import 'package:coffee_order/components/product_card.dart';
 import 'package:coffee_order/util/string_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductsPage extends StatefulWidget {
@@ -62,7 +64,7 @@ class ProductsPageState extends State<ProductsPage> {
           children: <Widget>[
             Text(StringUtils.formatPrice(_total)),
             FlatButton.icon(
-              label: Text('Share'),
+              label: Text('Finalizar Pedido'),
               icon: Icon(Icons.share),
               onPressed: _shareOrder,
             ),
@@ -78,7 +80,7 @@ class ProductsPageState extends State<ProductsPage> {
     }
 
     for (Product product in products) {
-      productCards.add(ProductCard(product: product, callback: _updateTotal));
+      productCards.add(ProductCard(product, callback: _updateTotal));
     }
 
     return productCards;
@@ -93,18 +95,10 @@ class ProductsPageState extends State<ProductsPage> {
   void _shareOrder() async {
     if (productCards.any((item) => item.orderItem.quantity > 0)) {
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      List<OrderItem> orderItems = productCards.map((pc) => OrderItem(
-          quantity: pc.orderItem.quantity, subtotal: pc.orderItem.subtotal));
+	  User user = User.fromJson(json.decode(preferences.get('user')));
+      List<OrderItem> orderItems = productCards.map((pc) => pc.orderItem).toList();
+      Order order = Order(user: user, items: orderItems);
 
-      Order order = Order.fromJson(preferences.get('user'));
-
-      var orderString = preferences.getString('user') +
-          ',' +
-          productCards
-              .map((productCard) => productCard.orderItem.quantity.toString())
-              .join(',');
-
-      Share.share(orderString);
       Api().saveOrder(order);
     } else {
       SnackBar mensagemErro = SnackBar(

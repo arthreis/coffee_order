@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'product.g.dart';
+
+@JsonSerializable(nullable: false)
 class Product {
   final String id;
   final String name;
@@ -13,12 +17,6 @@ class Product {
     @required this.imagePath,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      id: json['_id'],
-      name: json['name'],
-      price: json['price'].toDouble(),
-      imagePath: json['imagePath'],
-    );
-  }
+  factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
+  Map<String, dynamic> toJson() => _$ProductToJson(this);
 }

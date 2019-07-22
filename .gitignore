@@ -27,6 +27,7 @@ pubspeck.lock
 .pub-cache/
 .pub/
 /build/
+*.g.dart
 
 # Android related
 **/android/**/gradle-wrapper.jar

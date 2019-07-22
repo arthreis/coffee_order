@@ -8,9 +8,9 @@ part 'order.g.dart';
 @JsonSerializable(nullable: false)
 class Order {
   final User user;
-  final List<OrderItem> orderItems;
+  final List<OrderItem> items;
 
-  Order({@required this.user, @required this.orderItems});
+  Order({@required this.user, @required this.items});
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   Map<String, dynamic> toJson() => _$OrderToJson(this);

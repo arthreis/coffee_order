@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:coffee_order/screens/home.dart';
 import 'package:coffee_order/screens/products/products.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'models/user.dart';
 
 void main() => runApp(MyApp());
 
@@ -41,7 +45,7 @@ class MyAppState extends State<MyApp> {
 
   Future<String> _getUserName() {
     return SharedPreferences.getInstance().then((preferences) {
-      return preferences.getString('user');
+      return User.fromJson(json.decode(preferences.getString('user'))).name;
     }).catchError((error) {
       return error;
     });
