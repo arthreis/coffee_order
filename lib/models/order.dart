@@ -7,6 +7,7 @@ part 'order.g.dart';
 
 @JsonSerializable(nullable: false)
 class Order {
+  @JsonKey(toJson: _extractUserId)
   final User user;
   final List<OrderItem> items;
 
@@ -15,3 +16,5 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   Map<String, dynamic> toJson() => _$OrderToJson(this);
 }
+
+String _extractUserId(User user) => user.id;
