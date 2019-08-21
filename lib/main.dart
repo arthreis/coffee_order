@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:coffee_order/api/api.dart';
 import 'package:coffee_order/screens/home.dart';
 import 'package:coffee_order/screens/products/products.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +16,12 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  Future<String> userName;
+  Future<User> userId;
 
   @override
   void initState() {
     super.initState();
-    userName = _getUserName();
+    userId = _getUser();
   }
 
   @override
@@ -29,12 +30,12 @@ class MyAppState extends State<MyApp> {
       title: 'Coffee Order',
       theme: ThemeData(primarySwatch: Colors.amber, brightness: Brightness.dark, accentColor: Colors.amberAccent),
       home: FutureBuilder(
-          future: userName,
-          builder: (context, AsyncSnapshot<String> snapshot) {
+          future: userId,
+          builder: (context, AsyncSnapshot<User> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
                 return snapshot.data != null
-                    ? ProductsPage(userName: snapshot.data)
+                    ? ProductsPage(userName: snapshot.data.name)
                     : MyHomePage();
               default:
                 return Center(child: CircularProgressIndicator());
@@ -43,11 +44,8 @@ class MyAppState extends State<MyApp> {
     );
   }
 
-  Future<String> _getUserName() {
-    return SharedPreferences.getInstance().then((preferences) {
-      return User.fromJson(json.decode(preferences.getString('user'))).name;
-    }).catchError((error) {
-      return error;
-    });
+  Future<User> _getUser() async {
+    var preferences = await SharedPreferences.getInstance();
+    return Api().getUserById(preferences.getString('userId'));
   }
 }

@@ -31,7 +31,7 @@ class ProductsPageState extends State<ProductsPage> {
   @override
   void initState() {
     super.initState();
-    products = getProducts();
+    products = Api().getCoffees();
   }
 
   @override
@@ -95,8 +95,13 @@ class ProductsPageState extends State<ProductsPage> {
   void _shareOrder() async {
     if (productCards.any((item) => item.orderItem.quantity > 0)) {
       SharedPreferences preferences = await SharedPreferences.getInstance();
-	  User user = User.fromJson(json.decode(preferences.get('user')));
-      List<OrderItem> orderItems = productCards.map((pc) => pc.orderItem).toList();
+      User user = await Api().getUserById(preferences.getString('userId'));
+      if (user != null) {
+        throw Exception('ERROR: authentication is required');
+      }
+
+      List<OrderItem> orderItems =
+          productCards.map((pc) => pc.orderItem).toList();
       Order order = Order(user: user, items: orderItems);
 
       Api().saveOrder(order);
@@ -114,9 +119,5 @@ class ProductsPageState extends State<ProductsPage> {
     await preferences.remove('user');
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => MyHomePage()));
-  }
-
-  Future<List<Product>> getProducts() {
-    return Api().getCoffees();
   }
 }

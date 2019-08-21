@@ -11,7 +11,7 @@ class User {
   final String email;
 
   User({
-    @required this.id,
+    this.id,
     @required this.name,
     @required this.email
   });

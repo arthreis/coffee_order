@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:coffee_order/api/api.dart';
 import 'package:coffee_order/models/user.dart';
 import 'package:coffee_order/screens/products/products.dart';
 import 'package:flutter/material.dart';
@@ -46,28 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(color: Colors.white),
               ),
               color: Colors.blue,
-              onPressed: () async {
-                final preferences = await SharedPreferences.getInstance();
-                if (_nameFieldController.text.isNotEmpty &&
-                    _emailFieldController.text.isNotEmpty) {
-                  var user = User(name: _nameFieldController.text, email: _emailFieldController.text);
-                  await preferences.setString(
-                    'user', json.encode(user)
-                  );
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ProductsPage(
-                              userName: user.name)));
-                } else {
-                  SnackBar mensagemErro = SnackBar(
-                    content: Text('Nome ou email não preenchido!'),
-                    backgroundColor: Colors.redAccent,
-                    duration: Duration(seconds: 4),
-                  );
-                  _scaffoldKey.currentState.showSnackBar(mensagemErro);
-                }
-              },
+              onPressed: _login,
             )
           ],
         ),
@@ -75,10 +55,38 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _login() async {
+    final preferences = await SharedPreferences.getInstance();
+    if (_nameFieldController.text.isNotEmpty &&
+        _emailFieldController.text.isNotEmpty) {
+      User user;
+      try {
+        user = await Api().getUserByEmail(_emailFieldController.text);
+      } catch {
+        user = await Api().createUser(User(name: _nameFieldController.text, email: _emailFieldController.text));
+      } finally {
+        await preferences.setString('userId', user.id);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProductsPage(userName: user.name)));
+      }
+    } else {
+      SnackBar mensagemErro = SnackBar(
+        content: Text('Nome ou email não preenchido!'),
+        backgroundColor: Colors.redAccent,
+        duration: Duration(seconds: 4),
+      );
+      _scaffoldKey.currentState.showSnackBar(mensagemErro);
+    }
+  }
+
   @override
   void dispose() {
     // Clean up the controller when the Widget is disposed
     _nameFieldController.dispose();
+    _emailFieldController.dispose();
     super.dispose();
   }
 }
