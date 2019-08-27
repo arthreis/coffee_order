@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:coffee_order/api/api.dart';
 import 'package:coffee_order/screens/home.dart';
 import 'package:coffee_order/screens/products/products.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +45,7 @@ class MyAppState extends State<MyApp> {
 
   Future<User> _getUser() async {
     var preferences = await SharedPreferences.getInstance();
-    return Api().getUserById(preferences.getString('userId'));
+    var userJson = preferences.getString('userJson');
+    return userJson != null ? User.fromJson(json.decode(userJson)) : null;
   }
 }

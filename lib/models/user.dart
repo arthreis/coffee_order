@@ -1,11 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 class User {
+  @JsonKey(includeIfNull: false, name: '_id')
   final String id;
   final String name;
   final String email;

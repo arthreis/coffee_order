@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:coffee_order/models/order.dart';
 import 'package:coffee_order/models/product.dart';
@@ -8,64 +9,59 @@ import 'package:http/http.dart' as http;
 
 class Api {
 //   static const String BASE_URL = "http://api-coffee-order.herokuapp.com/";
-  static const String BASE_URL = "http://localhost:3000/";
+  static const String BASE_URL = "http://192.168.1.7:3000/";
   static const String COFFEES_URL = BASE_URL + "product/coffees/";
   static const String USER_URL = BASE_URL + "users/";
 
   Future<List<Product>> getCoffees() async {
-    var response = await http.get(COFFEES_URL).catchError((error) {
-      print(error);
-    });
-    print(response.body);
+    final response = await http.get(COFFEES_URL);
 
-    if (response.statusCode == 200) {
-      final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
-      return parsed.map((json) => Product.fromJson(json)).toList();
-    } else {
-      throw Exception("ERROR");
+    if (response.statusCode == HttpStatus.ok) {
+      return json.decode(response.body).map((json) => Product.fromJson(json)).toList();
     }
+
+    throw Exception('ERROR ${response.statusCode}');
   }
 
   Future<void> saveOrder(Order order) async {
-    await http
-        .post(COFFEES_URL, body: json.encode(order.toJson()))
-        .catchError((error) => print(error));
+    await http.post(COFFEES_URL, body: order.toJson());
   }
 
   Future<User> getUserById(String userId) async {
-    var response = await http.get(USER_URL + '$userId').catchError((error) {
-      print(error);
-    });
+    Map headers = {
+      'user-id': userId
+    };
 
-    if (response.statusCode == 200) {
+    final response = await http.get(USER_URL, headers: headers);
+
+    if (response.statusCode == HttpStatus.ok) {
       return User.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('ERROR ${response.statusCode}');
     }
+  
+    throw Exception('ERROR ${response.statusCode}');
   }
 
   Future<User> getUserByEmail(String email) async {
-    var response =
-        await http.get(USER_URL + 'email=$email').catchError((error) {
-      print(error);
-    });
+    Map<String, String> headers = {
+      'user-email': email
+    };
 
-    if (response.statusCode == 200) {
+    final response = await http.get(USER_URL, headers: headers);
+
+    if (response.statusCode == HttpStatus.ok) {
       return User.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('ERROR ${response.statusCode}');
     }
+    
+    throw Exception('ERROR ${response.statusCode}');
   }
 
   Future<User> createUser(User user) async {
-    var response = await http
-        .post(USER_URL, body: json.encode(user.toJson()))
-        .catchError((error) => print(error));
-
-    if (response.statusCode == 200) {
+    final response = await http.post(USER_URL, body: user.toJson());
+    
+    if (response.statusCode == HttpStatus.ok) {
       return User.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('ERROR ${response.statusCode}');
     }
+    
+    throw Exception('ERROR ${response.statusCode}');
   }
 }

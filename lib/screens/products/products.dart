@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:coffee_order/api/api.dart';
 import 'package:coffee_order/components/product_card.dart';
 import 'package:coffee_order/models/order.dart';
@@ -79,7 +77,7 @@ class ProductsPageState extends State<ProductsPage> {
       return productCards;
     }
 
-    for (Product product in products) {
+    for (Product product in products?? []) {
       productCards.add(ProductCard(product, callback: _updateTotal));
     }
 
