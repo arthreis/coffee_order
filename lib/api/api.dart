@@ -17,7 +17,7 @@ class Api {
     final response = await http.get(COFFEES_URL);
 
     if (response.statusCode == HttpStatus.ok) {
-      return json.decode(response.body).map((json) => Product.fromJson(json)).toList();
+      return json.decode(response.body).map((json) => Product.fromJson(json)).cast<Product>().toList();
     }
 
     throw Exception('ERROR ${response.statusCode}');

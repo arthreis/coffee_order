@@ -5,6 +5,7 @@ part 'product.g.dart';
 
 @JsonSerializable(nullable: false)
 class Product {
+  @JsonKey(name: '_id')
   final String id;
   final String name;
   final double price;

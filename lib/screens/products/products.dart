@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:coffee_order/api/api.dart';
 import 'package:coffee_order/components/product_card.dart';
 import 'package:coffee_order/models/order.dart';
@@ -93,7 +95,7 @@ class ProductsPageState extends State<ProductsPage> {
   void _shareOrder() async {
     if (productCards.any((item) => item.orderItem.quantity > 0)) {
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      User user = await Api().getUserById(preferences.getString('userId'));
+      User user = User.fromJson(jsonDecode(preferences.getString('userJson')));
       if (user != null) {
         throw Exception('ERROR: authentication is required');
       }
@@ -114,7 +116,7 @@ class ProductsPageState extends State<ProductsPage> {
 
   void _logout() async {
     var preferences = await SharedPreferences.getInstance();
-    await preferences.remove('user');
+    await preferences.remove('userJson');
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => MyHomePage()));
   }
