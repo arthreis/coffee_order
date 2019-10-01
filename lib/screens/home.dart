@@ -66,24 +66,40 @@ class _MyHomePageState extends State<MyHomePage> {
       User user;
       try {
         user = await Api().getUserByEmail(_emailFieldController.text);
-      } catch(Exception) {
-        user = await Api().createUser(User(name: _nameFieldController.text, email: _emailFieldController.text));
-      } finally {
+
+        if (user == null) {
+          showErrorToast('Usuário não cadastrado. Cadastrando...');
+
+          user = await Api().createUser(User(
+              name: _nameFieldController.text,
+              email: _emailFieldController.text));
+
+          if (user == null) {
+            throw Exception();
+          }
+        }
+
         await preferences.setString('userJson', json.encode(user.toJson()));
-        
+
         Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProductsPage(userName: user.name)));
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProductsPage(userName: user.name)));
+      } catch (Exception) {
+        showErrorToast('Não foi possível criar o usuário.');
       }
     } else {
-      SnackBar mensagemErro = SnackBar(
-        content: Text('Nome ou email não preenchido!'),
-        backgroundColor: Colors.redAccent,
-        duration: Duration(seconds: 4),
-      );
-      _scaffoldKey.currentState.showSnackBar(mensagemErro);
+      showErrorToast('Nome ou email não preenchido!');
     }
+  }
+
+  void showErrorToast(errorMessage) {
+    SnackBar mensagemErro = SnackBar(
+      content: Text(errorMessage),
+      backgroundColor: Colors.redAccent,
+      duration: Duration(seconds: 4),
+    );
+    _scaffoldKey.currentState.showSnackBar(mensagemErro);
   }
 
   @override

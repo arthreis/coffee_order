@@ -7,14 +7,12 @@ part 'order_item.g.dart';
 @JsonSerializable(nullable: false)
 class OrderItem {
   int quantity;
+  @JsonKey(ignore: true)
   double subtotal;
   @JsonKey(toJson: _productToJson)
   Product product;
 
-  OrderItem(
-      {@required this.quantity,
-      @required this.subtotal,
-      @required this.product});
+  OrderItem({@required this.quantity, this.subtotal, @required this.product});
 
   factory OrderItem.fromJson(Map<String, dynamic> json) =>
       _$OrderItemFromJson(json);

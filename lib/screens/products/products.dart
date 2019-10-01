@@ -66,7 +66,7 @@ class ProductsPageState extends State<ProductsPage> {
             FlatButton.icon(
               label: Text('Finalizar Pedido'),
               icon: Icon(Icons.share),
-              onPressed: _shareOrder,
+              onPressed: _checkout,
             ),
           ],
         ),
@@ -92,11 +92,11 @@ class ProductsPageState extends State<ProductsPage> {
     });
   }
 
-  void _shareOrder() async {
+  void _checkout() async {
     if (productCards.any((item) => item.orderItem.quantity > 0)) {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       User user = User.fromJson(jsonDecode(preferences.getString('userJson')));
-      if (user != null) {
+      if (user == null) {
         throw Exception('ERROR: authentication is required');
       }
 
@@ -104,11 +104,28 @@ class ProductsPageState extends State<ProductsPage> {
           productCards.map((pc) => pc.orderItem).toList();
       Order order = Order(user: user, items: orderItems);
 
-      Api().saveOrder(order);
+      try {
+        Api().saveOrder(order);
+
+        SnackBar mensagemErro = SnackBar(
+          content: Text('Pedido salvo com sucesso.'),
+          backgroundColor: Colors.lightGreen,
+          duration: Duration(seconds: 4),
+        );
+        _scaffoldKey.currentState.showSnackBar(mensagemErro);
+      } on Exception {
+        SnackBar mensagemErro = SnackBar(
+          content: Text('Ocorreu um erro ao salvar seu pedido. Tente novamente.'),
+          backgroundColor: Colors.redAccent,
+          duration: Duration(seconds: 4),
+        );
+        _scaffoldKey.currentState.showSnackBar(mensagemErro);
+      }
     } else {
       SnackBar mensagemErro = SnackBar(
         content: Text('Pedido vazio!'),
         backgroundColor: Colors.redAccent,
+        duration: Duration(seconds: 4),
       );
       _scaffoldKey.currentState.showSnackBar(mensagemErro);
     }
