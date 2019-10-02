@@ -23,8 +23,7 @@ class ProductCardState extends State<ProductCard> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: Image.asset(_getFullImagePath(widget.orderItem.product.name) ??
-                'assets/images/coffee_icons/empty.png'),
+            leading: _loadImage(widget.orderItem.product.name),
             title: Text(widget.orderItem.product.name),
             subtitle: Text(StringUtils.formatPrice(widget.orderItem.product.price)),
           ),
@@ -91,4 +90,13 @@ _getFullImagePath(String productName) {
       productName.split(' ').map((name) => name.toLowerCase()).join('-') +
           '.webp';
   return PATH_PREFIX + imageName;
+}
+
+_loadImage(String productName) {
+  final String imagePath = _getFullImagePath(productName);
+  try {
+    return Image.asset(imagePath);
+  } catch(e) {
+    return Image.asset('assets/images/coffee_icons/empty.png');
+  }
 }
