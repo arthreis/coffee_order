@@ -23,7 +23,7 @@ class ProductCardState extends State<ProductCard> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: _loadImage(widget.orderItem.product.name),
+            leading: _loadProductThumbnail(widget.orderItem.product.name),
             title: Text(widget.orderItem.product.name),
             subtitle: Text(StringUtils.formatPrice(widget.orderItem.product.price)),
           ),
@@ -92,7 +92,7 @@ _getFullImagePath(String productName) {
   return PATH_PREFIX + imageName;
 }
 
-_loadImage(String productName) {
+_loadProductThumbnail(String productName) {
   final String imagePath = _getFullImagePath(productName);
   try {
     return Image.asset(imagePath);
