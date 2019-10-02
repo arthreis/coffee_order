@@ -8,8 +8,8 @@ import 'package:coffee_order/models/user.dart';
 import 'package:http/http.dart' as http;
 
 class Api {
-//   static const String BASE_URL = "http://api-coffee-order.herokuapp.com";
-  static const String BASE_URL = "http://192.168.1.7:3000";
+  static const String BASE_URL = "http://api-coffee-order.herokuapp.com";
+  // static const String BASE_URL = "http://192.168.1.7:3000";
   static const String COFFEES_URL = BASE_URL + "/product/coffees";
   static const String USERS_URL = BASE_URL + "/users";
   static const String ORDERS_URL = BASE_URL + "/orders";
