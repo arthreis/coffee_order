@@ -101,11 +101,11 @@ class ProductsPageState extends State<ProductsPage> {
       }
 
       List<OrderItem> orderItems =
-          productCards.map((pc) => pc.orderItem).toList();
+          productCards.where((pc) => pc.orderItem.quantity > 0).map((pc) => pc.orderItem).toList();
       Order order = Order(user: user, items: orderItems);
 
       try {
-        Api().saveOrder(order);
+        await Api().saveOrder(order);
 
         SnackBar mensagemErro = SnackBar(
           content: Text('Pedido salvo com sucesso.'),
