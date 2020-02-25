@@ -7,4 +7,8 @@ class StringUtils {
 
     return numberFormat.format(price);
   }
+
+  static String getFirstName(String fullName) {
+    return fullName.split(' ')[0];
+  }
 }

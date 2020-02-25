@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:coffee_order/models/order.dart';
-import 'package:coffee_order/models/product.dart';
-import 'package:coffee_order/models/user.dart';
+import 'package:coffee_order/dto/order.dart';
+import 'package:coffee_order/dto/product.dart';
+import 'package:coffee_order/dto/user.dart';
 import 'package:http/http.dart' as http;
 
 class Api {

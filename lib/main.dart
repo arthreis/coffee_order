@@ -1,51 +1,35 @@
-import 'dart:convert';
-
-import 'package:coffee_order/screens/home.dart';
-import 'package:coffee_order/screens/products/products.dart';
+import 'package:coffee_order/screen/login_page.dart';
+import 'package:coffee_order/screen/products_page.dart';
+import 'package:coffee_order/model/user_model.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'models/user.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
-  @override
-  createState() => MyAppState();
-}
-
-class MyAppState extends State<MyApp> {
-  Future<User> userId;
-
-  @override
-  void initState() {
-    super.initState();
-    userId = _getUser();
-  }
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Coffee Order',
-      theme: ThemeData(primarySwatch: Colors.amber, brightness: Brightness.dark, accentColor: Colors.amberAccent),
-      home: FutureBuilder(
-          future: userId,
-          builder: (context, AsyncSnapshot<User> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                return snapshot.data != null
-                    ? ProductsPage(userName: snapshot.data.name)
-                    : MyHomePage();
-              default:
-                return Center(child: CircularProgressIndicator());
-            }
-          }),
+    return ChangeNotifierProvider<UserModel>(
+      create: (_) => UserModel(),
+      child: MaterialApp(
+        title: 'Coffee Order',
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          primarySwatch: Colors.amber,
+          accentColor: Colors.amberAccent,
+        ),
+        home: Consumer<UserModel>(builder: (context, userModel, child) {
+          if (userModel.loading) {
+            return Container(
+                constraints: BoxConstraints.expand(),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Center(child: CircularProgressIndicator()));
+          }
+          return userModel.user != null
+              ? ProductsPage(userName: userModel.user.displayName)
+              : LoginPage();
+        }),
+      ),
     );
-  }
-
-  Future<User> _getUser() async {
-    var preferences = await SharedPreferences.getInstance();
-    var userJson = preferences.getString('userJson');
-    return userJson != null ? User.fromJson(json.decode(userJson)) : null;
   }
 }

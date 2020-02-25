@@ -1,7 +1,9 @@
-import 'package:coffee_order/models/order_item.dart';
-import 'package:coffee_order/models/user.dart';
+
+import 'package:coffee_order/dto/user.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'order_item.dart';
 
 part 'order.g.dart';
 

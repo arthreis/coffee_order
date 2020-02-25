@@ -1,4 +1,4 @@
-import 'package:coffee_order/models/product.dart';
+import 'package:coffee_order/dto/product.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
