@@ -14,12 +14,14 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Coffee Order',
         theme: ThemeData(
-          brightness: Brightness.dark,
-          primaryColorDark: Colors.orange,
-          accentColor: Colors.orangeAccent,
           applyElevationOverlayColor: true,
-          scaffoldBackgroundColor: Color(0xff101010),
-          cardColor: Color(0xff101010)
+          brightness: Brightness.dark,
+          accentColor: Colors.orange.shade400,
+          scaffoldBackgroundColor: Color(0xff121212),
+          cardColor: Color(0xff121212),
+          bottomAppBarColor: Color(0xff121212),
+          errorColor: Colors.red.shade400,
+          indicatorColor: Colors.lightGreen.shade500
         ),
         home: Consumer<UserModel>(builder: (context, userModel, child) {
           if (userModel.loading) {

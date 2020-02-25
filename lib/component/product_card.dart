@@ -14,7 +14,7 @@ class ProductCard extends StatelessWidget {
   Widget build(context) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      elevation: 2.0,
+      elevation: 1.0,
       color: Theme.of(context).cardColor,
       child: Consumer<ProductModel>(
         builder: (context, productModel, child) {

@@ -19,7 +19,7 @@ class ProductsPage extends StatelessWidget {
       child: Container(
         child: Scaffold(
           drawer: Drawer(
-            elevation: 6.0,
+            elevation: 3.0,
             child: ListView(
               children: <Widget>[
                 ListTile(
@@ -41,7 +41,7 @@ class ProductsPage extends StatelessWidget {
             title: Text("Olá, ${StringUtils.getFirstName(userName)}"),
             actions: <Widget>[
               FlatButton(
-                child: Icon(Icons.exit_to_app),
+                child: Icon(Icons.exit_to_app, color: Theme.of(context).primaryTextTheme.body1.color),
                 onPressed: userModel.logout,
               )
             ],
@@ -87,8 +87,7 @@ class ProductsPage extends StatelessWidget {
               return SafeArea(
                 minimum: EdgeInsets.only(bottom: 3.0),
                 child: BottomAppBar(
-                  elevation: 4.0,
-                  color: Theme.of(context).primaryColor,
+                  elevation: 2.0,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: new Row(

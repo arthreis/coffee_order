@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 class SnackBarUtils {
   static void showSnackBar(context, message, success) {
+    final theme = Theme.of(context);
     final snackBar = SnackBar(
-      content: Text(message, style: Theme.of(context).accentTextTheme.body2),
-      backgroundColor: success ? Color(0xff03DAC6) : Color(0xffCF6679),
+      content: Text(message, style: theme.accentTextTheme.body2),
+      backgroundColor: success ? theme.indicatorColor : theme.errorColor,
       duration: Duration(seconds: 4),
     );
 
