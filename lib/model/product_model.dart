@@ -36,16 +36,16 @@ class ProductModel with ChangeNotifier {
     buscarProdutos(context);
   }
 
-  buscarProdutos(context) {
+  Future<void> buscarProdutos(context) async {
     _error = false;
-    Api().getCoffees().then((data) {
+    notifyListeners();
+    return Api().getCoffees().then((data) {
       products = data;
       _updateTotal();
     }).catchError((err) {
       log(err.toString());
       _error = true;
     }).whenComplete(() => notifyListeners());
-    notifyListeners();
   }
 
   void _updateTotal() {
@@ -61,10 +61,12 @@ class ProductModel with ChangeNotifier {
   }
 
   void removeProduct(index) {
-    _orders[index].quantity--;
-    _orders[index].subtotal = _orders[index].quantity * _products[index].price;
+    if (_orders[index].quantity > 0) {
+      _orders[index].quantity--;
+      _orders[index].subtotal = _orders[index].quantity * _products[index].price;
 
-    _updateTotal();
+      _updateTotal();
+    }
   }
 
   void checkout(BuildContext context, User user) async {
