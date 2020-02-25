@@ -1,49 +1,35 @@
-import 'package:coffee_order/screens/home.dart';
-import 'package:coffee_order/screens/products/products.dart';
+import 'package:coffee_order/screen/login_page.dart';
+import 'package:coffee_order/screen/products_page.dart';
+import 'package:coffee_order/model/user_model.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
-  @override
-  createState() => MyAppState();
-}
-
-class MyAppState extends State<MyApp> {
-  Future<String> userName;
-
-  @override
-  void initState() {
-    super.initState();
-    userName = _getUserName();
-  }
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Coffee Order',
-      theme: ThemeData(primarySwatch: Colors.amber, brightness: Brightness.dark, accentColor: Colors.amberAccent),
-      home: FutureBuilder(
-          future: userName,
-          builder: (context, AsyncSnapshot<String> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                return snapshot.data != null
-                    ? ProductsPage(userName: snapshot.data)
-                    : MyHomePage();
-              default:
-                return Center(child: CircularProgressIndicator());
-            }
-          }),
+    return ChangeNotifierProvider<UserModel>(
+      create: (_) => UserModel(),
+      child: MaterialApp(
+        title: 'Coffee Order',
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          primarySwatch: Colors.amber,
+          accentColor: Colors.amberAccent,
+        ),
+        home: Consumer<UserModel>(builder: (context, userModel, child) {
+          if (userModel.loading) {
+            return Container(
+                constraints: BoxConstraints.expand(),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Center(child: CircularProgressIndicator()));
+          }
+          return userModel.user != null
+              ? ProductsPage(userName: userModel.user.displayName)
+              : LoginPage();
+        }),
+      ),
     );
-  }
-
-  Future<String> _getUserName() {
-    return SharedPreferences.getInstance().then((preferences) {
-      return preferences.getString('user');
-    }).catchError((error) {
-      return error;
-    });
   }
 }
