@@ -14,7 +14,7 @@ class LoginPage extends StatelessWidget {
         title: Text('Bem vindo'),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 80.0),
+        padding: EdgeInsets.symmetric(horizontal: 60.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -29,19 +29,20 @@ class LoginPage extends StatelessWidget {
                   });
                 }
                 return MaterialButton(
-                    child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Image(
-                              height: 25,
-                              image: AssetImage('assets/images/social/g-logo.png'),
-                            ),
-                            SizedBox(width: 10),
-                            Text("Continuar com o Google", style: TextStyle(color: Colors.black87),)
-                          ],
-                        )),
+                    elevation: 2.0,
                     color: Colors.white,
+                    clipBehavior: Clip.hardEdge,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image(
+                          height: 27,
+                          image: AssetImage('assets/images/social/g-logo.png'),
+                        ),
+                        SizedBox(width: 15),
+                        Text("Continuar com o Google", style: TextStyle(color: Colors.black54),)
+                      ],
+                    ),
                     onPressed: () => userModel.loginOrSignUp(context));
               })
             ],

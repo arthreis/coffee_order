@@ -15,8 +15,11 @@ class MyApp extends StatelessWidget {
         title: 'Coffee Order',
         theme: ThemeData(
           brightness: Brightness.dark,
-          primarySwatch: Colors.amber,
-          accentColor: Colors.amberAccent,
+          primaryColorDark: Colors.orange,
+          accentColor: Colors.orangeAccent,
+          applyElevationOverlayColor: true,
+          scaffoldBackgroundColor: Color(0xff101010),
+          cardColor: Color(0xff101010)
         ),
         home: Consumer<UserModel>(builder: (context, userModel, child) {
           if (userModel.loading) {
