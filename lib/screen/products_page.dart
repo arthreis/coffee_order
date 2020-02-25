@@ -84,34 +84,37 @@ class ProductsPage extends StatelessWidget {
               final productModel =
                   Provider.of<ProductModel>(context, listen: false);
               final userModel = Provider.of<UserModel>(context, listen: false);
-              return BottomAppBar(
-                elevation: 4.0,
-                color: Theme.of(context).primaryColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: new Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Consumer<ProductModel>(
-                          builder: (context, productModel, child) =>
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text('Total', style: Theme.of(context).textTheme.caption),
-                                  Text(StringUtils.formatPrice(productModel.total), style: Theme.of(context).textTheme.subhead.copyWith(color: Theme.of(context).accentColor)),
-                                ],
-                              )),
-                      FlatButton.icon(
-                        color: Theme.of(context).accentColor,
-                        label: Text('Finalizar Pedido', style: Theme.of(context).accentTextTheme.body2,),
-                        icon: Icon(Icons.check, color: Theme.of(context).accentTextTheme.body2.color,),
-                        onPressed: () =>
-                            productModel.checkout(context, userModel.userDto),
-                      ),
-                    ],
+              return SafeArea(
+                minimum: EdgeInsets.only(bottom: 3.0),
+                child: BottomAppBar(
+                  elevation: 4.0,
+                  color: Theme.of(context).primaryColor,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: new Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Consumer<ProductModel>(
+                            builder: (context, productModel, child) =>
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text('Total', style: Theme.of(context).textTheme.caption),
+                                    Text(StringUtils.formatPrice(productModel.total), style: Theme.of(context).textTheme.subhead.copyWith(color: Theme.of(context).accentColor)),
+                                  ],
+                                )),
+                        FlatButton.icon(
+                          color: Theme.of(context).accentColor,
+                          label: Text('Finalizar Pedido', style: Theme.of(context).accentTextTheme.body2,),
+                          icon: Icon(Icons.check, color: Theme.of(context).accentTextTheme.body2.color,),
+                          onPressed: () =>
+                              productModel.checkout(context, userModel.userDto),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
