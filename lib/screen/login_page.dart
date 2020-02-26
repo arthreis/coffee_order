@@ -17,9 +17,12 @@ class LoginPage extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 60.0),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              SizedBox(height: 40),
+              Image.asset('assets/images/coffee-order-logo.png', height: 200),
+              SizedBox(height: 50,),
               Builder(builder: (context) {
                 if (userModel.error) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
