@@ -89,7 +89,7 @@ class ProductsPage extends StatelessWidget {
                 child: BottomAppBar(
                   elevation: 2.0,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                     child: new Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
@@ -97,20 +97,26 @@ class ProductsPage extends StatelessWidget {
                       children: <Widget>[
                         Consumer<ProductModel>(
                             builder: (context, productModel, child) =>
-                                Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text('Total', style: Theme.of(context).textTheme.caption),
-                                    Text(StringUtils.formatPrice(productModel.total), style: Theme.of(context).textTheme.subhead.copyWith(color: Theme.of(context).accentColor)),
-                                  ],
+                                Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text('Total', style: Theme.of(context).textTheme.caption),
+                                      Text(StringUtils.formatPrice(productModel.total), style: Theme.of(context).textTheme.subhead.copyWith(color: Theme.of(context).accentColor)),
+                                    ],
+                                  ),
                                 )),
-                        FlatButton.icon(
-                          color: Theme.of(context).accentColor,
-                          label: Text('Finalizar Pedido', style: Theme.of(context).accentTextTheme.body2,),
-                          icon: Icon(Icons.check, color: Theme.of(context).accentTextTheme.body2.color,),
-                          onPressed: () =>
-                              productModel.checkout(context, userModel.userDto),
+                        Expanded(
+                          flex: 1,
+                          child: FlatButton.icon(
+                            color: Theme.of(context).accentColor,
+                            label: Text('Finalizar Pedido', style: Theme.of(context).accentTextTheme.body2,),
+                            icon: Icon(Icons.check, color: Theme.of(context).accentTextTheme.body2.color,),
+                            onPressed: () =>
+                                productModel.checkout(context, userModel.userDto),
+                          ),
                         ),
                       ],
                     ),
