@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               SizedBox(height: 40),
-              Image.asset('assets/images/coffee-order-logo.png', height: 200),
+              Image.asset('assets/images/coffee-order-logo.png', height: 250),
               SizedBox(height: 50,),
               Builder(builder: (context) {
                 if (userModel.error) {

@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
           applyElevationOverlayColor: true,
           brightness: Brightness.dark,
           accentColor: Colors.lime.shade300,
+          primaryColor: Color(0xff121212),
           scaffoldBackgroundColor: Color(0xff121212),
           cardColor: Color(0xff121212),
           bottomAppBarColor: Color(0xff121212),

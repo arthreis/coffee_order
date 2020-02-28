@@ -15,8 +15,10 @@ class ProductModel with ChangeNotifier {
   List<OrderItem> _orders = [];
   double _total = 0;
   bool _error = false;
+  bool _loading = false;
 
-  get products => _products;
+  List<Product> get products => _products;
+
   set products(value) {
     _products = value;
     if (_products != null) {
@@ -29,23 +31,31 @@ class ProductModel with ChangeNotifier {
   }
 
   List<OrderItem> get orders => _orders;
+
   double get total => _total;
+
   bool get error => _error;
 
-  ProductModel(context) {
-    buscarProdutos(context);
+  bool get loading => _loading;
+
+  ProductModel() {
+    buscarProdutos();
   }
 
-  Future<void> buscarProdutos(context) async {
+  Future<void> buscarProdutos() async {
+    _loading = true;
     _error = false;
     notifyListeners();
-    return Api().getCoffees().then((data) {
-      products = data;
-      _updateTotal();
-    }).catchError((err) {
+
+    try {
+      products = await Api().getCoffees();
+    } catch(err) {
       log(err.toString());
       _error = true;
-    }).whenComplete(() => notifyListeners());
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
   }
 
   void _updateTotal() {
@@ -63,27 +73,30 @@ class ProductModel with ChangeNotifier {
   void removeProduct(index) {
     if (_orders[index].quantity > 0) {
       _orders[index].quantity--;
-      _orders[index].subtotal = _orders[index].quantity * _products[index].price;
+      _orders[index].subtotal =
+          _orders[index].quantity * _products[index].price;
 
       _updateTotal();
     }
   }
 
   void checkout(BuildContext context, User user) async {
-    if (orders.any((item) => item.quantity > 0)) {
-      List<OrderItem> orderItems =
-          _orders.where((item) => item.quantity > 0).toList();
-      Order order = Order(user: user, items: orderItems);
-
-      try {
+    _loading = true;
+    try {
+      if (orders.any((item) => item.quantity > 0)) {
+        List<OrderItem> orderItems =
+            _orders.where((item) => item.quantity > 0).toList();
+        Order order = Order(user: user, items: orderItems);
         await Api().saveOrder(order);
         SnackBarUtils.showSnackBar(context, 'Pedido salvo com sucesso.', true);
-      } on Exception {
-        SnackBarUtils.showSnackBar(context,
-            'Ocorreu um erro ao salvar seu pedido. Tente novamente.', false);
+      } else {
+        SnackBarUtils.showSnackBar(context, 'Pedido vazio!', false);
       }
-    } else {
-      SnackBarUtils.showSnackBar(context, 'Pedido vazio!', false);
+    } on Exception {
+      SnackBarUtils.showSnackBar(context,
+          'Ocorreu um erro ao salvar seu pedido. Tente novamente.', false);
+    } finally {
+      _loading = false;
     }
   }
 }
